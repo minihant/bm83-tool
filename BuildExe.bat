@@ -1,0 +1,1 @@
+pyinstaller -F -w bm83-tool.py
