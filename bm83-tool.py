@@ -1,20 +1,23 @@
 import sys
+# from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QApplication , QMainWindow
+from PyQt5.QtCore import QTimer
+# from PyQt5.uic import loadUi
 import serial
 import serial.tools.list_ports
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QTimer
 from ui_demo_2 import Ui_Form
 
 
-class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
+# class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
+class pyqt5Serial(QMainWindow, Ui_Form):
     def __init__(self):
-        super(Pyqt5_Serial, self).__init__()
+        super(pyqt5Serial, self).__init__()
         self.setupUi(self)
-        self.init()
+        #loadUi("ui_demo_2.ui", self)
+        # self.init()
         self.setWindowTitle("BM83 Tool")
         self.ser = serial.Serial()
-        self.port_check()
+        self.portCheck()
 
         # 接收数据和发送数据数目置零
         self.data_num_received = 0
@@ -22,9 +25,9 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
         self.data_num_sended = 0
         self.lineEdit_2.setText(str(self.data_num_sended))
 
-    def init(self):
+    # def init(self):
         # 串口检测按钮
-        self.s1__box_1.clicked.connect(self.port_check)
+        self.s1__box_1.clicked.connect(self.portCheck)
 
         # 串口信息显示
         self.s1__box_2.currentTextChanged.connect(self.port_imf)
@@ -72,7 +75,7 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
         self.s2__clear_button.clicked.connect(self.receive_data_clear)
 
     # 串口检测
-    def port_check(self):
+    def portCheck(self):
         # 检测所有存在的串口，将信息存储在字典中
         self.Com_Dict = {}
         port_list = list(serial.tools.list_ports.comports())
@@ -98,11 +101,7 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
         self.ser.stopbits = int(self.s1__box_6.currentText())
         self.ser.parity = self.s1__box_5.currentText()
 
-        try:
-            self.ser.open()
-        except:
-            QMessageBox.critical(self, "Port Error", "can not open port！")
-            return None
+        self.ser.open()
 
         # 打开串口接收定时器，周期为2ms
         self.timer.start(2)
@@ -116,10 +115,10 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
     def port_close(self):
         self.timer.stop()
         self.timer_send.stop()
-        try:
-            self.ser.close()
-        except:
-            pass
+        # try:
+        self.ser.close()
+        # except:
+        #    pass
         self.open_button.setEnabled(True)
         self.close_button.setEnabled(False)
         self.lineEdit_3.setEnabled(True)
@@ -141,11 +140,11 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
                     input_s = input_s.strip()
                     send_list = []
                     while input_s != '':
-                        try:
-                            num = int(input_s[0:2], 16)
-                        except ValueError:
-                            QMessageBox.critical(self, 'wrong data', 'Please input Hex data，split wit Space!')
-                            return None
+                        # try:
+                        num = int(input_s[0:2], 16)
+                        # except ValueError:
+                        #    QMessageBox.critical(self, 'wrong data', 'Please input Hex data，split wit Space!')
+                        #    return None
                         input_s = input_s[2:].strip()
                         send_list.append(num)
                     input_s = bytes(send_list)
@@ -161,11 +160,11 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
 
     # 接收数据
     def data_receive(self):
-        try:
-            num = self.ser.inWaiting()
-        except:
-            self.port_close()
-            return None
+        # try:
+        num = self.ser.inWaiting()
+        # except:
+        #    self.port_close()
+        #    return None
         if num > 0:
             data = self.ser.read(num)
             num = len(data)
@@ -288,7 +287,7 @@ class Pyqt5_Serial(QtWidgets.QWidget, Ui_Form):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    myshow = Pyqt5_Serial()
+    app = QApplication(sys.argv)
+    myshow = pyqt5Serial()
     myshow.show()
     sys.exit(app.exec_())

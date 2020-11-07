@@ -1,1 +1,1 @@
-pyinstaller -F -w bm83-tool.py
+pyinstaller -F --icon "tool.ico" --noconsole .\bm83-tool.py

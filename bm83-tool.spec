@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['bm83-tool.py'],
-             pathex=['D:\\0-Hant\\pythonAPP\\Pyserial-Demo'],
+             pathex=['C:\\temp\\0-python\\bm83-tool'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False )
+          console=False , icon='tool.ico')
